@@ -1,26 +1,26 @@
-describe("About Scope (about_scope.js)", function() {
+describe("About Scope (about_scope.js)", function () {
   thisIsAGlobalVariable = 77;
 
-  it("global variables", function() {
+  it("global variables", function () {
     // is thisIsAGlobalVariable defined in this scope?
-    expect(FILL_ME_IN).toBe(thisIsAGlobalVariable);
+    expect(77).toBe(thisIsAGlobalVariable);
   });
 
-  it("variables declared inside of a function", function() {
+  it("variables declared inside of a function", function () {
     let outerVariable = "outer";
 
     // this is a self-invoking function. Notice that it calls itself at the end ().
-    (function() {
+    (function () {
       let innerVariable = "inner";
       // is outerVariable defined in this scope?
-      expect(FILL_ME_IN).toBe(outerVariable);
+      expect("outer").toBe(outerVariable);
       // is innerVariable defined in this scope?
-      expect(FILL_ME_IN).toBe(innerVariable);
+      expect("inner").toBe(innerVariable);
     })();
 
     // is outerVariable defined in this scope?
-    expect(FILL_ME_IN).toBe(outerVariable);
+    expect("outer").toBe(outerVariable);
     // is innerVariable defined in this scope?
-    expect(FILL_ME_IN).toBe(typeof(innerVariable));
+    expect("undefined").toBe(typeof (innerVariable));
   });
 });
