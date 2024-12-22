@@ -58,7 +58,7 @@ describe('Player', () => {
     test('should move right correctly', () => {
       const initialPosition = player.position;
       player.moveRight(2);
-      expect(player.position).toBe(initialPosition + 1);
+      expect(player.position).toBe(Math.min(9, initialPosition + 1));
     });
 
     test('should move left by one position', () => {
@@ -72,7 +72,7 @@ describe('Player', () => {
       player.move(-2);
       expect(player.position).toBe(initialPosition - 1);
       player.move(2);
-      expect(player.position).toBe(initialPosition);
+      expect(player.position).toBe(Math.min(9, initialPosition));
     });
   });
 

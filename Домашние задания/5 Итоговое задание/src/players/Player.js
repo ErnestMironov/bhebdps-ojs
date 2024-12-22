@@ -43,7 +43,7 @@ export class Player {
 
   moveRight(distance) {
     const actualDistance = Math.min(distance, this.speed);
-    this.position = Math.min(20, this.position + actualDistance);
+    this.position = Math.min(9, this.position + actualDistance);
   }
 
   move(distance) {

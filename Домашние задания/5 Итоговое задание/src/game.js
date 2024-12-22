@@ -14,6 +14,7 @@ let players = [];
 let currentRound = 1;
 const BOARD_SIZE = 10;
 let isExecutingRound = false;
+let isGameOver = false;
 
 // Initialize game board
 function initializeBoard() {
@@ -29,7 +30,7 @@ function initializeBoard() {
 }
 
 // Initialize players
-function initializePlayers() {
+export function initializePlayers() {
   players = [
     new Warrior(0, 'Алёша Попович'),
     new Archer(2, 'Робин Гуд'),
@@ -152,7 +153,7 @@ function renderPlayers() {
       statusElement.textContent = 'ПОГИБ';
       card.classList.add('dead');
     } else {
-      statusElement.textContent = 'ЖИВОЙ';
+      statusElement.textContent = 'ЖИВО';
       card.classList.add('active');
     }
 
@@ -248,54 +249,44 @@ async function executePlayerTurn(player) {
   }
 }
 
-// Execute one round of battle
-async function executeRound() {
-  if (isExecutingRound) {
-    return;
-  }
-
+// Execute round
+export async function executeRound() {
+  if (isExecutingRound || isGameOver) return false;
   isExecutingRound = true;
 
   try {
-    // Проверяем, есть ли хотя бы два живых игрока
+    // Проверяем количество живых игроков
     const livingPlayers = players.filter((player) => !player.isDead());
 
     if (livingPlayers.length <= 1) {
       if (livingPlayers.length === 1) {
-        const winner = livingPlayers[0];
-        addLogMessage(`\nПобедитель: ${winner.description} ${winner.name}!`);
+        addLogMessage(`\nПобедитель: ${livingPlayers[0].description} ${livingPlayers[0].name}!`);
       } else {
         addLogMessage('\nНичья! Все игроки погибли.');
       }
-
-      endBattle();
-      return;
+      isGameOver = true;
+      nextRoundButton.disabled = true;
+      return true;
     }
 
-    addLogMessage(`\nРаунд ${currentRound}`);
+    // Обновляем номер раунда
+    if (typeof window !== 'undefined' && roundNumber) {
+      roundNumber.textContent = currentRound;
+    }
 
+    addLogMessage(`\n=== Раунд ${currentRound} ===`);
+
+    // Выполняем ходы всех живых игроков
     for (const player of players) {
       await executePlayerTurn(player);
     }
 
     currentRound++;
-
-    // Проверяем состояние игры после раунда
-    const remainingPlayers = players.filter((player) => !player.isDead());
-
-    if (remainingPlayers.length <= 1) {
-      if (remainingPlayers.length === 1) {
-        const winner = remainingPlayers[0];
-        addLogMessage(`\nПобедитель: ${winner.description} ${winner.name}!`);
-      } else {
-        addLogMessage('\nНичья! Все игроки погибли.');
-      }
-
-      endBattle();
-    }
+    return false;
   } catch (error) {
     console.error('Error during round execution:', error);
-    addLogMessage('Произошла ошибка во время выполнения раунда');
+    addLogMessage('Ошибка во время выполнения раунда');
+    return true;
   } finally {
     isExecutingRound = false;
   }
@@ -306,19 +297,15 @@ function startBattle() {
   startButton.disabled = true;
   nextRoundButton.disabled = false;
   resetButton.disabled = false;
+  isGameOver = false;
   initializeBoard();
   initializePlayers();
-}
-
-// End the battle
-function endBattle() {
-  nextRoundButton.disabled = true;
-  resetButton.disabled = false;
 }
 
 // Reset the game
 function resetGame() {
   currentRound = 1;
+  isGameOver = false;
   roundNumber.textContent = 'Раунд: 1';
   logContent.innerHTML = '';
   startButton.disabled = false;
