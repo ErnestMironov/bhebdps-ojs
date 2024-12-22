@@ -1,6 +1,5 @@
 import { Bow, Sword, Staff } from './BasicWeapons.js';
 
-// Improved bow with longer range
 export class LongBow extends Bow {
   constructor() {
     super();
@@ -10,7 +9,6 @@ export class LongBow extends Bow {
   }
 }
 
-// Improved sword with higher durability
 export class Axe extends Sword {
   constructor() {
     super();
@@ -21,7 +19,6 @@ export class Axe extends Sword {
   }
 }
 
-// Improved staff with higher attack and range
 export class StormStaff extends Staff {
   constructor() {
     super();

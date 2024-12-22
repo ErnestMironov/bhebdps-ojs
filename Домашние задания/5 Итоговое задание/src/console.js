@@ -3,7 +3,6 @@ import { Dwarf } from './players/ImprovedPlayers.js';
 
 let players = [];
 
-// Initialize players
 function initializePlayers() {
   players = [
     new Warrior(0, 'Алёша Попович'),
@@ -21,7 +20,6 @@ function initializePlayers() {
   });
 }
 
-// Execute player turn
 async function executePlayerTurn(player) {
   if (!player.isDead()) {
     try {
@@ -83,7 +81,6 @@ async function executePlayerTurn(player) {
   }
 }
 
-// Execute round
 async function executeRound() {
   try {
     // Проверяем количество живых игроков

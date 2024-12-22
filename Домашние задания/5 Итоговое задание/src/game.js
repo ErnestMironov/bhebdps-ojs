@@ -16,7 +16,6 @@ const BOARD_SIZE = 10;
 let isExecutingRound = false;
 let isGameOver = false;
 
-// Initialize game board
 function initializeBoard() {
   boardPositions.innerHTML = '';
 
@@ -29,7 +28,6 @@ function initializeBoard() {
   }
 }
 
-// Initialize players
 export function initializePlayers() {
   players = [
     new Warrior(0, 'Алёша Попович'),
@@ -53,7 +51,6 @@ export function initializePlayers() {
   }
 }
 
-// Update player positions on the board
 function updatePlayerPositions() {
   document.querySelectorAll('.position-cell').forEach((cell) => {
     cell.classList.remove('occupied');
@@ -80,7 +77,6 @@ function updatePlayerPositions() {
   });
 }
 
-// Render players cards
 function renderPlayers() {
   playersList.innerHTML = '';
   const template = document.getElementById('player-template');
@@ -161,7 +157,6 @@ function renderPlayers() {
   });
 }
 
-// Add message to battle log
 function addLogMessage(message) {
   // Логируем в консоль
   console.log(message);
@@ -175,12 +170,10 @@ function addLogMessage(message) {
   }
 }
 
-// Sleep function for delays
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-// Execute player turn with animation
 async function executePlayerTurn(player) {
   if (!player.isDead()) {
     try {
@@ -249,7 +242,6 @@ async function executePlayerTurn(player) {
   }
 }
 
-// Execute round
 export async function executeRound() {
   if (isExecutingRound || isGameOver) return false;
   isExecutingRound = true;
@@ -292,7 +284,6 @@ export async function executeRound() {
   }
 }
 
-// Start the battle
 function startBattle() {
   startButton.disabled = true;
   nextRoundButton.disabled = false;
@@ -302,7 +293,6 @@ function startBattle() {
   initializePlayers();
 }
 
-// Reset the game
 function resetGame() {
   currentRound = 1;
   isGameOver = false;
@@ -315,10 +305,8 @@ function resetGame() {
   initializeBoard();
 }
 
-// Event listeners
 startButton.addEventListener('click', startBattle);
 nextRoundButton.addEventListener('click', executeRound);
 resetButton.addEventListener('click', resetGame);
 
-// Initialize the game
 resetGame();
