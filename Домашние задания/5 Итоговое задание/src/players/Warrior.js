@@ -14,6 +14,7 @@ export class Warrior extends Player {
   takeDamage(damage) {
     if (this.life < 50 && this.getLuck() > 0.8) {
       this.magic = Math.max(0, this.magic - damage);
+
       if (this.magic === 0) {
         super.takeDamage(damage);
       }
@@ -31,4 +32,4 @@ export class Warrior extends Player {
       }
     }
   }
-} 
+}

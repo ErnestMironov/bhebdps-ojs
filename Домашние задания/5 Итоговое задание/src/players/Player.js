@@ -19,8 +19,13 @@ export class Player {
   }
 
   getDamage(distance) {
-    if (distance > this.weapon.range) return 0;
-    return Math.round((this.attack + this.weapon.getDamage()) * this.getLuck() / Math.max(1, distance));
+    if (distance > this.weapon.range) {
+      return 0;
+    }
+
+    return Math.round(
+      ((this.attack + this.weapon.getDamage()) * this.getLuck()) / Math.max(1, distance)
+    );
   }
 
   takeDamage(damage) {
@@ -62,13 +67,10 @@ export class Player {
   }
 
   takeAttack(damage) {
-    if (process.env.NODE_ENV === 'test' && this.name === 'Test Player') {
-      return;
-    }
-
     if (this.isAttackBlocked() || this.dodged()) {
       return;
     }
+
     this.takeDamage(damage);
   }
 
@@ -79,8 +81,15 @@ export class Player {
   }
 
   tryAttack(enemy) {
+    if (!enemy) {
+      return;
+    }
+
     const distance = Math.abs(this.position - enemy.position);
-    if (distance > this.weapon.range) return;
+
+    if (distance > this.weapon.range) {
+      return;
+    }
 
     if (this.missedAttack()) {
       return;
@@ -98,26 +107,30 @@ export class Player {
   }
 
   chooseEnemy(players) {
-    return players
-      .filter(p => p !== this && !p.isDead())
-      .sort((a, b) => a.life - b.life)[0];
+    if (!players || !Array.isArray(players)) {
+      return null;
+    }
+
+    const enemies = players.filter((p) => p !== this && !p.isDead());
+
+    if (enemies.length === 0) {
+      return null;
+    }
+
+    return enemies.sort((a, b) => a.life - b.life)[0];
   }
 
   moveToEnemy(enemy) {
-    if (process.env.NODE_ENV === 'test') {
-      const distance = enemy.position - this.position;
-      if (distance > 0) {
-        this.moveRight(1);
-      } else if (distance < 0) {
-        this.moveLeft(1);
-      }
+    if (!enemy) {
       return;
     }
 
     if (Math.random() < 0.15) {
       return;
     }
+
     const distance = enemy.position - this.position;
+
     if (distance > 0) {
       this.moveRight(1);
     } else if (distance < 0) {
@@ -127,10 +140,13 @@ export class Player {
 
   turn(players) {
     const enemy = this.chooseEnemy(players);
-    if (!enemy) return;
+
+    if (!enemy) {
+      return;
+    }
 
     this.moveToEnemy(enemy);
     this.tryAttack(enemy);
     this.checkWeapon();
   }
-} 
+}

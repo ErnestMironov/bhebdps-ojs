@@ -41,4 +41,4 @@ describe('Basic Weapons', () => {
     expect(staff.durability).toBe(300);
     expect(staff.range).toBe(2);
   });
-}); 
+});

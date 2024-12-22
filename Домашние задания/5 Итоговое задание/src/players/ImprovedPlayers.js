@@ -18,11 +18,23 @@ export class Dwarf extends Warrior {
 
   takeDamage(damage) {
     this.hitCount++;
+
     // Каждый шестой удар соперника наносит в 2 раза меньше урона при getLuck() > 0.5
     if (this.hitCount % 6 === 0 && this.getLuck() > 0.5) {
       damage = Math.floor(damage / 2);
     }
+
     super.takeDamage(damage);
+  }
+
+  checkWeapon() {
+    if (this.weapon.isBroken()) {
+      if (this.weapon instanceof Axe) {
+        this.weapon = new Knife();
+      } else if (this.weapon instanceof Knife) {
+        this.weapon = new Arm();
+      }
+    }
   }
 }
 
@@ -64,12 +76,18 @@ export class Demiurge extends Mage {
   }
 
   getDamage(distance) {
-    if (distance > this.weapon.range) return 0;
-    const baseDamage = (this.attack + this.weapon.getDamage()) * this.getLuck() / Math.max(1, distance);
+    if (distance > this.weapon.range) {
+      return 0;
+    }
+
+    const baseDamage =
+      ((this.attack + this.weapon.getDamage()) * this.getLuck()) / Math.max(1, distance);
+
     // При уровне маны > 0, наносимый урон в 1.5 выше при getLuck() > 0.6
     if (this.magic > 0 && this.getLuck() > 0.6) {
       return Math.round(baseDamage * 1.5);
     }
+
     return Math.round(baseDamage);
   }
 
@@ -82,4 +100,4 @@ export class Demiurge extends Mage {
       }
     }
   }
-} 
+}

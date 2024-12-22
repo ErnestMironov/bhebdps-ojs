@@ -1,4 +1,4 @@
-import { describe, expect, test, jest } from '@jest/globals';
+import { describe, expect, test } from '@jest/globals';
 import { Warrior } from '../src/players/BasicPlayers.js';
 import { Sword, Knife, Arm } from '../src/weapons/BasicWeapons.js';
 
@@ -26,7 +26,7 @@ describe('Warrior', () => {
     const initialMagic = warrior.magic;
     warrior.takeDamage(10);
     expect(warrior.life).toBe(50); // Жизнь не должна измениться
-    expect(warrior.magic).toBe(initialMagic - 10); // Урон должен пойти в ману
+    expect(warrior.magic).toBe(initialMagic - 10); // Урон должен п��йти в ману
 
     global.Math = Object.create(global.Math);
   });
@@ -43,4 +43,4 @@ describe('Warrior', () => {
     warrior.checkWeapon();
     expect(warrior.weapon).toBeInstanceOf(Arm);
   });
-}); 
+});

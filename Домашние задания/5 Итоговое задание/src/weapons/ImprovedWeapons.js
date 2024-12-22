@@ -29,4 +29,4 @@ export class StormStaff extends Staff {
     this.attack = 10;
     this.range = 3;
   }
-} 
+}

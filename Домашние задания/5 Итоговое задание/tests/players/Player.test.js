@@ -106,4 +106,4 @@ describe('Player', () => {
       expect(totalAttack).toBeGreaterThan(player.attack);
     });
   });
-}); 
+});

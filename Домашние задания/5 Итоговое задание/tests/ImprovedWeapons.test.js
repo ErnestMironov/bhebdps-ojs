@@ -45,4 +45,4 @@ describe('Improved Weapons', () => {
     expect(axe.getDamage()).toBe(27);
     expect(staff.getDamage()).toBe(10);
   });
-}); 
+});

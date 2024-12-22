@@ -1,4 +1,4 @@
-import { describe, expect, test, jest } from '@jest/globals';
+import { describe, expect, test } from '@jest/globals';
 import { Dwarf } from '../src/players/ImprovedPlayers.js';
 
 describe('Dwarf', () => {
@@ -28,4 +28,4 @@ describe('Dwarf', () => {
 
     global.Math = Object.create(global.Math);
   });
-}); 
+});

@@ -49,7 +49,7 @@ describe('Player', () => {
     const player = new Player(5, 'Test Player');
     // Mock Math.random to test dodge and block
     const mockMath = Object.create(global.Math);
-    mockMath.random = () => 0.9; // High value to ensure dodge/block
+    mockMath.random = () => 0.01; // Low value to ensure dodge/block
     global.Math = mockMath;
 
     const initialLife = player.life;
@@ -62,11 +62,7 @@ describe('Player', () => {
 
   test('should choose closest enemy with lowest health', () => {
     const player = new Player(5, 'Test Player');
-    const enemies = [
-      new Player(3, 'Enemy 1'),
-      new Player(7, 'Enemy 2'),
-      new Player(4, 'Enemy 3')
-    ];
+    const enemies = [new Player(3, 'Enemy 1'), new Player(7, 'Enemy 2'), new Player(4, 'Enemy 3')];
     enemies[0].life = 30;
     enemies[1].life = 20;
     enemies[2].life = 40;
@@ -81,7 +77,7 @@ describe('Player', () => {
 
     // Mock Math.random to ensure movement
     const mockMath = Object.create(global.Math);
-    mockMath.random = () => 0; // Low value to ensure movement
+    mockMath.random = () => 0.2; // Value above 0.15 to ensure movement
     global.Math = mockMath;
 
     player.moveToEnemy(enemy);
@@ -138,4 +134,4 @@ describe('Player', () => {
 
     global.Math = Object.create(global.Math);
   });
-}); 
+});

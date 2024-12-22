@@ -48,8 +48,13 @@ export class Archer extends Player {
   }
 
   getDamage(distance) {
-    if (distance > this.weapon.range) return 0;
-    return Math.round((this.attack + this.weapon.getDamage()) * this.getLuck() * distance / this.weapon.range);
+    if (distance > this.weapon.range) {
+      return 0;
+    }
+
+    return Math.round(
+      ((this.attack + this.weapon.getDamage()) * this.getLuck() * distance) / this.weapon.range
+    );
   }
 
   checkWeapon() {
@@ -95,4 +100,4 @@ export class Mage extends Player {
       }
     }
   }
-} 
+}

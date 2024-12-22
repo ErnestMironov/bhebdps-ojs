@@ -1,6 +1,4 @@
-import { Warrior } from './players/Warrior.js';
-import { Archer } from './players/Archer.js';
-import { Mage } from './players/Mage.js';
+import { Warrior, Archer, Mage } from './players/BasicPlayers.js';
 import { Dwarf } from './players/ImprovedPlayers.js';
 
 // DOM Elements
@@ -20,6 +18,7 @@ let isExecutingRound = false;
 // Initialize game board
 function initializeBoard() {
   boardPositions.innerHTML = '';
+
   for (let i = 0; i < BOARD_SIZE; i++) {
     const cell = document.createElement('div');
     cell.className = 'position-cell';
@@ -32,31 +31,42 @@ function initializeBoard() {
 // Initialize players
 function initializePlayers() {
   players = [
-    new Warrior(0, "Алёша Попович"),
-    new Archer(2, "Робин Гуд"),
-    new Mage(4, "Гэндальф"),
-    new Dwarf(6, "Гимли")
+    new Warrior(0, 'Алёша Попович'),
+    new Archer(2, 'Робин Гуд'),
+    new Mage(4, 'Гэндальф'),
+    new Dwarf(6, 'Гимли'),
   ];
-  renderPlayers();
-  updatePlayerPositions();
+
   addLogMessage('Битва начинается!');
   addLogMessage('Участники:');
-  players.forEach(player => {
-    addLogMessage(`${player.description} ${player.name} (Здоровье: ${player.life}, Позиция: ${player.position})`);
+  players.forEach((player) => {
+    addLogMessage(
+      `${player.description} ${player.name} (Здоровье: ${player.life}, Позиция: ${player.position})`
+    );
   });
+
+  // Обновляем UI только если он доступен
+  if (typeof window !== 'undefined') {
+    renderPlayers();
+    updatePlayerPositions();
+  }
 }
 
 // Update player positions on the board
 function updatePlayerPositions() {
-  document.querySelectorAll('.position-cell').forEach(cell => {
+  document.querySelectorAll('.position-cell').forEach((cell) => {
     cell.classList.remove('occupied');
     const marker = cell.querySelector('.player-marker');
-    if (marker) marker.remove();
+
+    if (marker) {
+      marker.remove();
+    }
   });
 
-  players.forEach(player => {
+  players.forEach((player) => {
     if (!player.isDead()) {
       const cell = document.querySelector(`[data-position="${player.position}"]`);
+
       if (cell) {
         cell.classList.add('occupied');
         const marker = document.createElement('div');
@@ -74,7 +84,7 @@ function renderPlayers() {
   playersList.innerHTML = '';
   const template = document.getElementById('player-template');
 
-  players.forEach(player => {
+  players.forEach((player) => {
     const clone = template.content.cloneNode(true);
     const card = clone.querySelector('.player-card');
 
@@ -82,30 +92,53 @@ function renderPlayers() {
     clone.querySelector('.player-description').textContent = player.description;
 
     let maxLife;
+
     switch (player.description) {
-      case 'Воин': maxLife = 120; break;
-      case 'Лучник': maxLife = 80; break;
-      case 'Маг': maxLife = 70; break;
-      case 'Гном': maxLife = 130; break;
-      default: maxLife = 150;
+      case 'Воин':
+        maxLife = 120;
+        break;
+      case 'Лучник':
+        maxLife = 80;
+        break;
+      case 'Маг':
+        maxLife = 70;
+        break;
+      case 'Гном':
+        maxLife = 130;
+        break;
+      default:
+        maxLife = 150;
     }
+
     const healthPercent = (player.life / maxLife) * 100;
     clone.querySelector('.health-fill').style.width = `${healthPercent}%`;
     clone.querySelector('.health-text').textContent = Math.round(player.life);
 
     let maxMana;
+
     switch (player.description) {
-      case 'Воин': maxMana = 20; break;
-      case 'Лучник': maxMana = 35; break;
-      case 'Маг': maxMana = 100; break;
-      case 'Гном': maxMana = 20; break;
-      default: maxMana = 50;
+      case 'Воин':
+        maxMana = 20;
+        break;
+      case 'Лучник':
+        maxMana = 35;
+        break;
+      case 'Маг':
+        maxMana = 100;
+        break;
+      case 'Гном':
+        maxMana = 20;
+        break;
+      default:
+        maxMana = 50;
     }
+
     const manaPercent = (player.magic / maxMana) * 100;
     clone.querySelector('.mana-fill').style.width = `${manaPercent}%`;
     clone.querySelector('.mana-text').textContent = Math.round(player.magic);
 
     clone.querySelector('.weapon-name').textContent = player.weapon.name;
+
     if (player.weapon.durability !== Infinity) {
       const durabilityPercent = (player.weapon.durability / player.weapon.initDurability) * 100;
       clone.querySelector('.durability-fill').style.width = `${durabilityPercent}%`;
@@ -114,6 +147,7 @@ function renderPlayers() {
     }
 
     const statusElement = clone.querySelector('.player-status');
+
     if (player.isDead()) {
       statusElement.textContent = 'ПОГИБ';
       card.classList.add('dead');
@@ -128,82 +162,143 @@ function renderPlayers() {
 
 // Add message to battle log
 function addLogMessage(message) {
-  const p = document.createElement('p');
-  p.textContent = message;
-  logContent.appendChild(p);
-  logContent.scrollTop = logContent.scrollHeight;
+  // Логируем в консоль
+  console.log(message);
+
+  // Добавляем в UI, если он доступен
+  if (typeof window !== 'undefined' && logContent) {
+    const p = document.createElement('p');
+    p.textContent = message;
+    logContent.appendChild(p);
+    logContent.scrollTop = logContent.scrollHeight;
+  }
 }
 
 // Sleep function for delays
 function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 // Execute player turn with animation
 async function executePlayerTurn(player) {
   if (!player.isDead()) {
-    addLogMessage(`\nХод игрока ${player.description} ${player.name}`);
-    addLogMessage(`Здоровье: ${player.life}, Позиция: ${player.position}`);
+    try {
+      addLogMessage(`\nХод игрока ${player.description} ${player.name}`);
+      addLogMessage(
+        `Здоровье: ${player.life}, Позиция: ${player.position}, Оружие: ${player.weapon.name} (прочность: ${player.weapon.durability})`
+      );
 
-    const oldPosition = player.position;
-    const oldHealth = players.map(p => ({ name: p.name, health: p.life }));
+      const oldPosition = player.position;
+      const oldHealth = players.map((p) => ({ name: p.name, health: p.life }));
+      const oldWeapon = player.weapon.name;
 
-    await sleep(200);
-    player.turn(players);
-    await sleep(200);
+      // Проверяем, есть ли живые противники
+      const livingEnemies = players.filter((p) => p !== player && !p.isDead());
 
-    if (oldPosition !== player.position) {
-      addLogMessage(`${player.name} перемещается с позиции ${oldPosition} на позицию ${player.position}`);
-      await sleep(100);
-    }
+      if (livingEnemies.length === 0) {
+        addLogMessage(`${player.name} не может сделать ход - нет живых противников`);
+        return;
+      }
 
-    for (const p of players) {
-      const oldStats = oldHealth.find(oh => oh.name === p.name);
-      if (oldStats && oldStats.health !== p.life) {
-        const damage = oldStats.health - p.life;
-        addLogMessage(`${player.name} наносит ${damage.toFixed(1)} урона ${p.name}`);
+      // Выполняем ход
+      player.turn(players);
+
+      // Проверяем изменение позиции
+      if (oldPosition !== player.position) {
+        addLogMessage(
+          `${player.name} перемещается с позиции ${oldPosition} на позицию ${player.position}`
+        );
+      }
+
+      // Проверяем смену оружия
+      if (oldWeapon !== player.weapon.name) {
+        addLogMessage(`${player.name} меняет оружие с ${oldWeapon} на ${player.weapon.name}`);
+      }
+
+      // Проверяем нанесенный урон
+      for (const p of players) {
+        const oldStats = oldHealth.find((oh) => oh.name === p.name);
+
+        if (oldStats && oldStats.health !== p.life) {
+          const damage = oldStats.health - p.life;
+          addLogMessage(`${player.name} наносит ${damage.toFixed(1)} урона ${p.name}`);
+        }
+      }
+
+      addLogMessage('Состояние игроков после хода:');
+
+      for (const p of players) {
+        if (!p.isDead()) {
+          addLogMessage(
+            `${p.description} ${p.name}: Здоровье - ${p.life}, Позиция - ${p.position}, Оружие - ${p.weapon.name}`
+          );
+        }
+      }
+
+      // Обновляем UI только если он доступен
+      if (typeof window !== 'undefined') {
+        renderPlayers();
+        updatePlayerPositions();
         await sleep(100);
       }
+    } catch (error) {
+      console.error('Error during player turn:', error);
+      addLogMessage(`Ошибка во время хода игрока ${player.name}`);
     }
-
-    addLogMessage('Состояние игроков после хода:');
-    for (const p of players) {
-      if (!p.isDead()) {
-        addLogMessage(`${p.description} ${p.name}: Здоровье - ${p.life}, Позиция - ${p.position}`);
-      }
-    }
-
-    renderPlayers();
-    updatePlayerPositions();
-    await sleep(100);
   }
 }
 
 // Execute one round of battle
 async function executeRound() {
-  if (isExecutingRound) return;
+  if (isExecutingRound) {
+    return;
+  }
+
   isExecutingRound = true;
-  nextRoundButton.disabled = true;
 
-  roundNumber.textContent = `Раунд: ${currentRound}`;
-  addLogMessage(`\nРаунд ${currentRound}`);
+  try {
+    // Проверяем, есть ли хотя бы два живых игрока
+    const livingPlayers = players.filter((player) => !player.isDead());
 
-  for (const player of players) {
-    await executePlayerTurn(player);
+    if (livingPlayers.length <= 1) {
+      if (livingPlayers.length === 1) {
+        const winner = livingPlayers[0];
+        addLogMessage(`\nПобедитель: ${winner.description} ${winner.name}!`);
+      } else {
+        addLogMessage('\nНичья! Все игроки погибли.');
+      }
+
+      endBattle();
+      return;
+    }
+
+    addLogMessage(`\nРаунд ${currentRound}`);
+
+    for (const player of players) {
+      await executePlayerTurn(player);
+    }
+
+    currentRound++;
+
+    // Проверяем состояние игры после раунда
+    const remainingPlayers = players.filter((player) => !player.isDead());
+
+    if (remainingPlayers.length <= 1) {
+      if (remainingPlayers.length === 1) {
+        const winner = remainingPlayers[0];
+        addLogMessage(`\nПобедитель: ${winner.description} ${winner.name}!`);
+      } else {
+        addLogMessage('\nНичья! Все игроки погибли.');
+      }
+
+      endBattle();
+    }
+  } catch (error) {
+    console.error('Error during round execution:', error);
+    addLogMessage('Произошла ошибка во время выполнения раунда');
+  } finally {
+    isExecutingRound = false;
   }
-
-  currentRound++;
-
-  // Check for game end
-  if (players.filter(player => !player.isDead()).length <= 1) {
-    const winner = players.find(player => !player.isDead());
-    addLogMessage(`\nПобедитель: ${winner.description} ${winner.name}!`);
-    endBattle();
-  } else {
-    nextRoundButton.disabled = false;
-  }
-
-  isExecutingRound = false;
 }
 
 // Start the battle
@@ -239,4 +334,4 @@ nextRoundButton.addEventListener('click', executeRound);
 resetButton.addEventListener('click', resetGame);
 
 // Initialize the game
-resetGame(); 
+resetGame();

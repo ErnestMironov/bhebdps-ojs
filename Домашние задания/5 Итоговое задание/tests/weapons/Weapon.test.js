@@ -44,4 +44,4 @@ describe('Weapon', () => {
     weapon.takeDamage(100);
     expect(weapon.isBroken()).toBe(true);
   });
-}); 
+});
