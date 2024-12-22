@@ -1,0 +1,15 @@
+{
+	"name": "rpg-game",
+	"version": "1.0.0",
+	"description": "RPG game implementation",
+	"main": "index.js",
+	"type": "module",
+	"scripts": {
+		"test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --config jest.config.cjs",
+		"test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --config jest.config.cjs --coverage"
+	},
+	"devDependencies": {
+		"jest": "^29.7.0",
+		"@jest/globals": "^29.7.0"
+	}
+}
