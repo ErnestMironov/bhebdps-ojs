@@ -1,19 +1,19 @@
-import { Warrior } from './BasicPlayers.js';
-import { Axe } from '../weapons/ImprovedWeapons.js';
+import { Warrior, Archer, Mage } from './BasicPlayers.js';
+import { Axe, LongBow, StormStaff } from '../weapons/ImprovedWeapons.js';
+import { Knife, Arm } from '../weapons/BasicWeapons.js';
 
 export class Dwarf extends Warrior {
   constructor(position, name) {
     super(position, name);
-    this.life = 150;
-    this.magic = 50;
-    this.speed = 1;
-    this.attack = 5;
-    this.agility = 15;
+    this.life = 130;
+    this.magic = 20;
+    this.speed = 2;
+    this.attack = 15;
+    this.agility = 5;
     this.luck = 20;
-    this.armor = 0.2;
     this.description = 'Гном';
     this.weapon = new Axe();
-    this.hitCount = 5;
+    this.hitCount = 0;
   }
 
   takeDamage(damage) {
@@ -22,10 +22,64 @@ export class Dwarf extends Warrior {
     if (this.hitCount % 6 === 0 && this.getLuck() > 0.5) {
       damage = Math.floor(damage / 2);
     }
-    // В тестовом режиме не применяем броню
-    if (!process.env.NODE_ENV || process.env.NODE_ENV !== 'test') {
-      damage = Math.floor(damage * (1 - this.armor));
-    }
     super.takeDamage(damage);
+  }
+}
+
+export class Crossbowman extends Archer {
+  constructor(position, name) {
+    super(position, name);
+    this.life = 85;
+    this.magic = 35;
+    this.speed = 1;
+    this.attack = 8;
+    this.agility = 20;
+    this.luck = 15;
+    this.description = 'Арбалетчик';
+    this.weapon = new LongBow();
+  }
+
+  checkWeapon() {
+    if (this.weapon.isBroken()) {
+      if (this.weapon instanceof LongBow) {
+        this.weapon = new Knife();
+      } else if (this.weapon instanceof Knife) {
+        this.weapon = new Arm();
+      }
+    }
+  }
+}
+
+export class Demiurge extends Mage {
+  constructor(position, name) {
+    super(position, name);
+    this.life = 80;
+    this.magic = 120;
+    this.speed = 1;
+    this.attack = 6;
+    this.agility = 8;
+    this.luck = 12;
+    this.description = 'Демиург';
+    this.weapon = new StormStaff();
+  }
+
+  getDamage(distance) {
+    if (distance > this.weapon.range) return 0;
+    const baseDamage = (this.attack + this.weapon.getDamage()) * this.getLuck() / Math.max(1, distance);
+    // При уровне маны > 0, наносимый урон в 1.5 выше при getLuck() > 0.6
+    if (this.magic > 0 && this.getLuck() > 0.6) {
+      return Math.round(baseDamage * 1.5);
+    }
+    return Math.round(baseDamage);
+  }
+
+  checkWeapon() {
+    if (this.weapon.isBroken()) {
+      if (this.weapon instanceof StormStaff) {
+        this.weapon = new Knife();
+      } else if (this.weapon instanceof Knife) {
+        this.weapon = new Arm();
+      }
+    }
   }
 } 

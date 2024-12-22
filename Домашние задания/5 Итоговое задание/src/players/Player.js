@@ -86,12 +86,12 @@ export class Player {
       return;
     }
 
-    this.weapon.takeDamage(3 * this.getLuck());
+    this.weapon.takeDamage(10 * this.getLuck());
     const damage = this.getDamage(distance);
 
     if (this.position === enemy.position) {
       enemy.move(1);
-      enemy.takeAttack(damage * 1.3);
+      enemy.takeAttack(damage);
     } else {
       enemy.takeAttack(damage);
     }

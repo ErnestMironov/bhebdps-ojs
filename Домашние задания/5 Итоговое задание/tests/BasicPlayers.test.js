@@ -17,7 +17,8 @@ describe('Warrior', () => {
 
   test('should handle magic damage reduction when health is low', () => {
     const warrior = new Warrior(5, 'Test Warrior');
-    warrior.life = 50; // Меньше половины от 120
+    warrior.maxLife = 100; // Устанавливаем maxLife
+    warrior.life = 50; // Меньше половины от maxLife
     const mockMath = Object.create(global.Math);
     mockMath.random = () => 0.9; // Высокое значение для getLuck()
     global.Math = mockMath;
